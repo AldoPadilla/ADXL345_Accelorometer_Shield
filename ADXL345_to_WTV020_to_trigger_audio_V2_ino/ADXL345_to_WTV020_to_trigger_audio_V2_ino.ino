@@ -38,6 +38,8 @@ Create an instance of the Wtv020sd16p class.
  */
 Wtv020sd16p wtv020sd16p(resetPin,clockPin,dataPin,busyPin);
 
+long randNumber;
+
 
 ADXL345 adxl; //variable adxl is an instance of the ADXL345 library
 
@@ -52,7 +54,7 @@ void setup(){
   //set activity/ inactivity thresholds (0-255)
   adxl.setActivityThreshold(75); //62.5mg per increment
   adxl.setInactivityThreshold(75); //62.5mg per increment
-  adxl.setTimeInactivity(10); // how many seconds of no activity is inactive?
+  adxl.setTimeInactivity(25); // how many seconds of no activity is inactive?
  
   //look of activity movement on this axes - 1 == on; 0 == off 
   adxl.setActivityX(1);
@@ -146,6 +148,8 @@ void loop(){
   if(adxl.triggered(interrupts, ADXL345_INACTIVITY)){
     Serial.println("inactivity");
      //add code here to do when inactivity is sensed
+      wtv020sd16p.asyncPlayVoice(2);
+      delay (1000);
   }
   
   //activity
@@ -157,8 +161,9 @@ void loop(){
   //double tap
   if(adxl.triggered(interrupts, ADXL345_DOUBLE_TAP)){
     Serial.println("double tap");
+      randNumber = random(1, 5);
      //add code here to do when a 2X tap is sensed
-      wtv020sd16p.asyncPlayVoice(1);
+      wtv020sd16p.asyncPlayVoice(randNumber);
       delay (1000);
   }
   
@@ -170,7 +175,7 @@ void loop(){
   
   //x value
   if(x > 90 && y >= 10 && y <= 100 && ax >= 0.65 && az >= 0.70){
-    Serial.println("XXX");
+    Serial.println("jump");
      //add code here to do when a tap is sensed
       wtv020sd16p.asyncPlayVoice(0);
       delay (1000);
